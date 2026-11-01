@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
@@ -17,6 +18,10 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
 export default function App() {
+  useEffect(() => {
+    document.title = 'SpendWise — Expense Management & Budget Tracker';
+  }, []);
+
   return (
     <ThemeProvider>
       <CurrencyProvider>
