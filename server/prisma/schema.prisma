@@ -1,0 +1,58 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  password      String
+  currency      String        @default("INR")
+  monthlyBudget Float?        @default(50000)
+  transactions  Transaction[]
+  budgets       Budget[]
+  categories    Category[]
+  createdAt     DateTime      @default(now())
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  userId       String?
+  name         String
+  type         String
+  color        String        @default("#3B82F6")
+  icon         String        @default("tag")
+  user         User?         @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String
+  categoryId  String
+  amount      Float
+  type        String
+  paymentMode String   @default("UPI")
+  description String?
+  receiptUrl  String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model Budget {
+  id         String   @id @default(uuid())
+  userId     String
+  categoryId String
+  monthlyCap Float
+  monthYear  String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id])
+}
